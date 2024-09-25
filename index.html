@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Color Picker</title>
+</head>
+<body>
+  <canvas style="background:#667072;">
+
+  </canvas>
+  <input type="file" accept="image/*" />
+  <input type="number" id="startNumInpt" value="0" placeholder="Start Index" onchange="num = startNumInpt.value;" />
+  <p style="color:#d0d0d0;"></p>
+  <script type="text/javascript" charset="utf-8">
+    var cnvs = document.querySelector('canvas');
+    var ctx = cnvs.getContext('2d');
+    var colorList = [];
+    var output = document.querySelector('p');
+    var startNumInpt = document.querySelector('#startNumInpt');
+    var num = startNumInpt.value;
+    
+    cnvs.onclick = function(e) {
+      var color = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+      colorList.push(color);
+      displayColorValue();
+    };
+    function displayColorValue(e) {
+      var color = colorList[colorList.length-1];
+      var rgb = `${color[0]},${color[1]},${color[2]}`;
+      output.innerHTML += `<span style='background:rgb(${rgb});'>C${num} = rgb(${rgb})</span><br>`;
+      num++;
+      console.log(color);
+      
+    }
+    var inpt = document.querySelector('input');
+    var imageFile = document.createElement('img');
+    inpt.onchange = function() {
+      imageFile.src = URL.createObjectURL(inpt.files[0]);
+      imageFile.onload = () => {
+        preview(imageFile)};
+    }
+    var reader = new FileReader();
+    function preview(image) {
+      cnvs.width = image.width;
+      cnvs.height = image.height;
+      ctx.beginPath();
+      ctx.drawImage(image, 0, 0);
+    }
+  </script>
+</body>
+</html>
